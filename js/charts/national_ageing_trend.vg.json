@@ -1,0 +1,109 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Historical share of Australia's population aged 65+ and 85+.",
+  "width": "container",
+  "height": 340,
+  "data": {
+    "url": "data/australia_age_history_1971_2025.csv"
+  },
+  "transform": [
+    {
+      "fold": [
+        "pct_65_plus",
+        "pct_85_plus"
+      ],
+      "as": [
+        "age_group",
+        "share"
+      ]
+    },
+    {
+      "calculate": "datum.age_group === 'pct_65_plus' ? 'Aged 65+' : 'Aged 85+'",
+      "as": "age_label"
+    }
+  ],
+  "mark": {
+    "type": "line",
+    "strokeWidth": 3.5,
+    "interpolate": "monotone",
+    "point": false
+  },
+  "encoding": {
+    "x": {
+      "field": "year",
+      "type": "quantitative",
+      "title": null,
+      "axis": {
+        "format": "d",
+        "grid": false,
+        "tickCount": 7,
+        "labelColor": "#68757d",
+        "domainColor": "#b8b4aa"
+      }
+    },
+    "y": {
+      "field": "share",
+      "type": "quantitative",
+      "title": "Share of population (%)",
+      "scale": {
+        "zero": true
+      },
+      "axis": {
+        "gridColor": "#e4dfd5",
+        "gridOpacity": 0.8,
+        "domain": false,
+        "labelColor": "#68757d",
+        "titleColor": "#68757d"
+      }
+    },
+    "color": {
+      "field": "age_label",
+      "type": "nominal",
+      "title": null,
+      "scale": {
+        "domain": [
+          "Aged 65+",
+          "Aged 85+"
+        ],
+        "range": [
+          "#287c78",
+          "#d49a45"
+        ]
+      },
+      "legend": {
+        "orient": "top",
+        "direction": "horizontal",
+        "labelColor": "#68757d",
+        "labelFontSize": 12,
+        "symbolStrokeWidth": 3,
+        "offset": 12
+      }
+    },
+    "tooltip": [
+      {
+        "field": "year",
+        "type": "quantitative",
+        "title": "Year",
+        "format": "d"
+      },
+      {
+        "field": "age_label",
+        "type": "nominal",
+        "title": "Age group"
+      },
+      {
+        "field": "share",
+        "type": "quantitative",
+        "title": "Population share",
+        "format": ".1f"
+      }
+    ]
+  },
+  "config": {
+    "background": null,
+    "font": "DM Sans",
+    "view": {
+      "stroke": null
+    }
+  }
+}

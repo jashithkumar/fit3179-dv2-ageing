@@ -1,0 +1,163 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Top ten Australian LGAs by share of population aged 65+ in 2025.",
+  "width": "container",
+  "height": 400,
+
+  "data": {
+    "url": "data/lga_ageing_2025.csv",
+    "format": {
+        "type": "csv",
+        "parse": {
+        "pct_65_plus": "number",
+        "total_population": "number",
+        "median_age": "number"
+        }
+    }
+    },
+
+  "transform": [
+    {
+      "filter": "datum.total_population >= 5000"
+    },
+    {
+      "window": [
+        {
+          "op": "rank",
+          "as": "rank"
+        }
+      ],
+      "sort": [
+        {
+          "field": "pct_65_plus",
+          "order": "descending"
+        }
+      ]
+    },
+    {
+      "filter": "datum.rank <= 10"
+    },
+    {
+      "calculate": "format(datum.pct_65_plus, '.1f') + '%'",
+      "as": "pct_label"
+    }
+  ],
+
+  "encoding": {
+    "y": {
+      "field": "lga_name",
+      "type": "nominal",
+      "sort": {
+        "field": "pct_65_plus",
+        "order": "descending"
+      },
+      "title": null,
+      "axis": {
+        "domain": false,
+        "ticks": false,
+        "labelPadding": 10,
+        "labelColor": "#1d2933",
+        "labelFontSize": 12
+      }
+    },
+
+    "x": {
+      "field": "pct_65_plus",
+      "type": "quantitative",
+      "title": "Share aged 65+ (%)",
+      "scale": {
+        "domain": [0, 45]
+      },
+      "axis": {
+        "gridColor": "#ded9cf",
+        "domain": false,
+        "titleColor": "#68757d",
+        "labelColor": "#68757d"
+      }
+    }
+  },
+
+  "layer": [
+    {
+      "mark": {
+        "type": "rule",
+        "strokeWidth": 2,
+        "color": "#9ebbb8"
+      },
+      "encoding": {
+        "x2": {
+          "datum": 0
+        }
+      }
+    },
+
+    {
+      "mark": {
+        "type": "point",
+        "filled": true,
+        "size": 120,
+        "color": "#287c78"
+      },
+
+      "encoding": {
+        "tooltip": [
+          {
+            "field": "lga_name",
+            "type": "nominal",
+            "title": "LGA"
+          },
+          {
+            "field": "state",
+            "type": "nominal",
+            "title": "State"
+          },
+          {
+            "field": "pct_65_plus",
+            "type": "quantitative",
+            "title": "Aged 65+",
+            "format": ".1f"
+          },
+          {
+            "field": "median_age",
+            "type": "quantitative",
+            "title": "Median age",
+            "format": ".1f"
+          },
+          {
+            "field": "total_population",
+            "type": "quantitative",
+            "title": "Population",
+            "format": ","
+          }
+        ]
+      }
+    },
+
+    {
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "baseline": "middle",
+        "dx": 10,
+        "fontSize": 12,
+        "fontWeight": 600,
+        "color": "#173b57"
+      },
+
+      "encoding": {
+        "text": {
+          "field": "pct_label",
+          "type": "nominal"
+        }
+      }
+    }
+  ],
+
+  "config": {
+    "background": null,
+    "font": "DM Sans",
+    "view": {
+      "stroke": null
+    }
+  }
+}
