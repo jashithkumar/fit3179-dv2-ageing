@@ -10,6 +10,12 @@ vegaEmbed(
 ).catch(console.error);
 
 vegaEmbed(
+  "#chart-ageing-map",
+  "js/charts/ageing_choropleth.vg.json",
+  embedOptions
+).catch(console.error);
+
+vegaEmbed(
   "#chart-oldest-lgas",
   "js/charts/oldest_lgas.vg.json",
   embedOptions
