@@ -1,0 +1,134 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+
+  "description": "Absolute number of residents aged 65 and over by Australian LGA, 2025.",
+
+  "width": "container",
+  "height": 540,
+
+  "projection": {
+    "type": "conicEqualArea",
+    "parallels": [-18, -36],
+    "rotate": [-134, 0, 0],
+    "center": [0, -28]
+  },
+
+  "layer": [
+
+    {
+      "data": {
+        "url": "data/geo/lga_ageing_2025.topojson",
+        "format": {
+          "type": "topojson",
+          "feature": "lga_2025"
+        }
+      },
+
+      "mark": {
+        "type": "geoshape",
+        "fill": "#ebe7dd",
+        "stroke": "#f5f2e9",
+        "strokeWidth": 0.5
+      }
+    },
+
+    {
+      "data": {
+        "url": "data/lga_65plus_points_2025.csv",
+        "format": {
+          "type": "csv",
+          "parse": {
+            "lon": "number",
+            "lat": "number",
+            "age_65_plus": "number",
+            "pct_65_plus": "number",
+            "total_population": "number",
+            "median_age": "number"
+          }
+        }
+      },
+
+      "mark": {
+        "type": "circle",
+        "color": "#d49a45",
+        "opacity": 0.52,
+        "stroke": "#8b642c",
+        "strokeWidth": 0.7
+      },
+
+      "encoding": {
+
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+
+        "size": {
+          "field": "age_65_plus",
+          "type": "quantitative",
+          "title": "People aged 65+",
+
+          "scale": {
+            "domain": [0, 190000],
+            "range": [8, 1500]
+          },
+
+          "legend": {
+            "orient": "right",
+            "titleColor": "#173b57",
+            "labelColor": "#68757d",
+            "titleFontSize": 12,
+            "labelFontSize": 11,
+            "format": "~s",
+            "values": [25000, 75000, 150000]
+          }
+        },
+
+        "tooltip": [
+          {
+            "field": "lga_name",
+            "type": "nominal",
+            "title": "LGA"
+          },
+          {
+            "field": "state",
+            "type": "nominal",
+            "title": "State"
+          },
+          {
+            "field": "age_65_plus",
+            "type": "quantitative",
+            "title": "People aged 65+",
+            "format": ","
+          },
+          {
+            "field": "pct_65_plus",
+            "type": "quantitative",
+            "title": "65+ share",
+            "format": ".1f"
+          },
+          {
+            "field": "total_population",
+            "type": "quantitative",
+            "title": "Total population",
+            "format": ","
+          }
+        ]
+      }
+    }
+  ],
+
+  "config": {
+    "background": null,
+    "font": "DM Sans",
+
+    "view": {
+      "stroke": null
+    }
+  }
+}

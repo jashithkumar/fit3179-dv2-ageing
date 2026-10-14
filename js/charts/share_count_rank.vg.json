@@ -1,0 +1,235 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+
+  "description": "Comparison of Australian LGA ranks by share and number of residents aged 65 and over.",
+
+  "width": "container",
+  "height": 420,
+
+  "data": {
+    "url": "data/lga_ageing_2025.csv",
+    "format": {
+      "type": "csv",
+      "parse": {
+        "total_population": "number",
+        "pct_65_plus": "number",
+        "age_65_plus": "number"
+      }
+    }
+  },
+
+  "transform": [
+    {
+      "filter": "datum.total_population >= 5000"
+    },
+
+    {
+      "window": [
+        {
+          "op": "rank",
+          "as": "share_rank"
+        }
+      ],
+      "sort": [
+        {
+          "field": "pct_65_plus",
+          "order": "descending"
+        }
+      ]
+    },
+
+    {
+      "window": [
+        {
+          "op": "rank",
+          "as": "count_rank"
+        }
+      ],
+      "sort": [
+        {
+          "field": "age_65_plus",
+          "order": "descending"
+        }
+      ]
+    },
+
+    {
+      "calculate": "abs(datum.share_rank - datum.count_rank)",
+      "as": "rank_gap"
+    },
+
+    {
+      "filter": "datum.share_rank <= 5 || datum.count_rank <= 5"
+    }
+  ],
+
+  "encoding": {
+    "y": {
+      "field": "lga_name",
+      "type": "nominal",
+      "title": null,
+
+      "sort": {
+        "field": "rank_gap",
+        "order": "descending"
+      },
+
+      "axis": {
+        "domain": false,
+        "ticks": false,
+        "labelPadding": 10,
+        "labelColor": "#1d2933",
+        "labelFontSize": 12
+      }
+    }
+  },
+
+  "layer": [
+
+    {
+      "mark": {
+        "type": "rule",
+        "stroke": "#b9b5ac",
+        "strokeWidth": 2
+      },
+
+      "encoding": {
+        "x": {
+          "field": "share_rank",
+          "type": "quantitative",
+          "title": "Rank among LGAs (1 = highest)",
+
+          "scale": {
+            "domain": [1, 360],
+            "zero": false
+          },
+
+          "axis": {
+            "gridColor": "#e4dfd5",
+            "gridOpacity": 0.8,
+            "domain": false,
+            "labelColor": "#68757d",
+            "titleColor": "#68757d",
+            "values": [1, 50, 100, 150, 200, 250, 300, 350],
+            "labelFlush": false
+          }
+        },
+
+        "x2": {
+          "field": "count_rank"
+        }
+      }
+    },
+
+    {
+      "transform": [
+        {
+          "fold": [
+            "share_rank",
+            "count_rank"
+          ],
+          "as": [
+            "rank_type",
+            "rank"
+          ]
+        },
+
+        {
+          "calculate": "datum.rank_type === 'share_rank' ? 'Rank by 65+ share' : 'Rank by number aged 65+'",
+          "as": "rank_label"
+        }
+      ],
+
+      "mark": {
+        "type": "point",
+        "filled": true,
+        "size": 125,
+        "stroke": "#f5f2e9",
+        "strokeWidth": 1.5
+      },
+
+      "encoding": {
+        "x": {
+          "field": "rank",
+          "type": "quantitative"
+        },
+
+        "color": {
+          "field": "rank_label",
+          "type": "nominal",
+          "title": null,
+
+          "scale": {
+            "domain": [
+              "Rank by 65+ share",
+              "Rank by number aged 65+"
+            ],
+
+            "range": [
+              "#287c78",
+              "#d49a45"
+            ]
+          },
+
+          "legend": {
+            "orient": "top",
+            "direction": "horizontal",
+            "labelColor": "#68757d",
+            "labelFontSize": 12,
+            "symbolSize": 100
+          }
+        },
+
+        "tooltip": [
+          {
+            "field": "lga_name",
+            "type": "nominal",
+            "title": "LGA"
+          },
+
+          {
+            "field": "state",
+            "type": "nominal",
+            "title": "State"
+          },
+
+          {
+            "field": "rank_label",
+            "type": "nominal",
+            "title": "Ranking"
+          },
+
+          {
+            "field": "rank",
+            "type": "quantitative",
+            "title": "Rank",
+            "format": ".0f"
+          },
+
+          {
+            "field": "pct_65_plus",
+            "type": "quantitative",
+            "title": "65+ share",
+            "format": ".1f"
+          },
+
+          {
+            "field": "age_65_plus",
+            "type": "quantitative",
+            "title": "People aged 65+",
+            "format": ","
+          }
+        ]
+      }
+    }
+  ],
+
+  "config": {
+    "background": null,
+    "font": "DM Sans",
+
+    "view": {
+      "stroke": null
+    }
+  }
+}

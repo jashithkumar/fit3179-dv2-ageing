@@ -26,3 +26,15 @@ vegaEmbed(
   "js/charts/oldest_lgas.vg.json",
   embedOptions
 ).catch(console.error);
+
+vegaEmbed(
+  "#chart-older-population-map",
+  "js/charts/older_population_symbols.vg.json",
+  embedOptions
+).catch(console.error);
+
+vegaEmbed(
+  "#chart-rank-comparison",
+  "js/charts/share_count_rank.vg.json",
+  embedOptions
+).catch(console.error);
