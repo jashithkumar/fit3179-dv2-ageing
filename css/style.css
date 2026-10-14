@@ -242,6 +242,16 @@ footer {
   margin: 5px 0 0;
 }
 
+.footer-content a {
+  color: var(--muted);
+  text-decoration-color: var(--teal-light);
+  text-underline-offset: 3px;
+}
+
+.footer-content a:hover {
+  color: var(--teal);
+}
+
 
 /* -------------------------
    SMALL SCREENS
