@@ -1,0 +1,224 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+
+  "description": "Selected Australian LGAs showing change in the share of residents aged 65 and over from 2001 to 2025.",
+
+  "width": "container",
+  "height": 420,
+
+  "data": {
+    "url": "data/lga_ageing_change_2001_2025.csv",
+    "format": {
+      "type": "csv",
+      "parse": {
+        "pct_65_plus_2001": "number",
+        "pct_65_plus_2025": "number",
+        "pp_change_65_plus": "number"
+      }
+    }
+  },
+
+  "transform": [
+    {
+      "filter": "indexof(['Toodyay', 'Glamorgan-Spring Bay', 'Alexandrina', 'Victoria Park', 'Merri-bek', 'Melbourne'], datum.lga_name) >= 0"
+    },
+
+    {
+      "calculate": "datum.pp_change_65_plus >= 0 ? 'Increase' : 'Decrease'",
+      "as": "direction"
+    },
+
+    {
+      "fold": [
+        "pct_65_plus_2001",
+        "pct_65_plus_2025"
+      ],
+      "as": [
+        "period",
+        "share"
+      ]
+    },
+
+    {
+      "calculate": "datum.period === 'pct_65_plus_2001' ? '2001' : '2025'",
+      "as": "year"
+    }
+  ],
+
+  "layer": [
+
+    {
+      "mark": {
+        "type": "line",
+        "strokeWidth": 2.5
+      },
+
+      "encoding": {
+        "x": {
+          "field": "year",
+          "type": "ordinal",
+          "title": null,
+
+          "sort": ["2001", "2025"],
+
+          "axis": {
+            "domain": false,
+            "ticks": false,
+            "labelColor": "#173b57",
+            "labelFontSize": 14,
+            "labelFontWeight": 700,
+            "labelPadding": 12,
+            "labelAngle": 0
+          }
+        },
+
+        "y": {
+          "field": "share",
+          "type": "quantitative",
+          "title": "Population aged 65+ (%)",
+
+          "scale": {
+            "domain": [0, 45]
+          },
+
+          "axis": {
+            "gridColor": "#e4dfd5",
+            "gridOpacity": 0.8,
+            "domain": false,
+            "labelColor": "#68757d",
+            "titleColor": "#68757d"
+          }
+        },
+
+        "detail": {
+          "field": "lga_name"
+        },
+
+        "color": {
+          "field": "direction",
+          "type": "nominal",
+          "title": null,
+
+          "scale": {
+            "domain": ["Increase", "Decrease"],
+            "range": ["#c7773c", "#6672a5"]
+          },
+
+          "legend": {
+            "orient": "top",
+            "direction": "horizontal",
+            "labelColor": "#68757d",
+            "labelFontSize": 12
+          }
+        }
+      }
+    },
+
+    {
+      "mark": {
+        "type": "point",
+        "filled": true,
+        "size": 105,
+        "stroke": "#f5f2e9",
+        "strokeWidth": 1.4
+      },
+
+      "encoding": {
+        "x": {
+          "field": "year",
+          "type": "ordinal",
+          "sort": ["2001", "2025"]
+        },
+
+        "y": {
+          "field": "share",
+          "type": "quantitative"
+        },
+
+        "color": {
+          "field": "direction",
+          "type": "nominal",
+          "scale": {
+            "domain": ["Increase", "Decrease"],
+            "range": ["#c7773c", "#6672a5"]
+          },
+          "legend": null
+        },
+
+        "tooltip": [
+          {
+            "field": "lga_name",
+            "type": "nominal",
+            "title": "LGA"
+          },
+          {
+            "field": "state",
+            "type": "nominal",
+            "title": "State"
+          },
+          {
+            "field": "year",
+            "type": "nominal",
+            "title": "Year"
+          },
+          {
+            "field": "share",
+            "type": "quantitative",
+            "title": "65+ share",
+            "format": ".1f"
+          },
+          {
+            "field": "pp_change_65_plus",
+            "type": "quantitative",
+            "title": "2001–2025 change",
+            "format": "+.1f"
+          }
+        ]
+      }
+    },
+
+    {
+      "transform": [
+        {
+          "filter": "datum.year === '2025'"
+        }
+      ],
+
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "baseline": "middle",
+        "dx": 9,
+        "fontSize": 11,
+        "fontWeight": 600,
+        "color": "#173b57"
+      },
+
+      "encoding": {
+        "x": {
+          "field": "year",
+          "type": "ordinal",
+          "sort": ["2001", "2025"]
+        },
+
+        "y": {
+          "field": "share",
+          "type": "quantitative"
+        },
+
+        "text": {
+          "field": "lga_name"
+        }
+      }
+    }
+  ],
+
+  "config": {
+    "background": null,
+    "font": "DM Sans",
+
+    "view": {
+      "stroke": null
+    }
+  }
+}

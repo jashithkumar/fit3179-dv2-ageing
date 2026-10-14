@@ -33,7 +33,7 @@
       "field": "properties.pct_65_plus",
       "type": "quantitative",
 
-      "title": "65+ share (%)",
+      "title": "65+ (%)",
 
       "scale": {
         "domain": [5, 45],

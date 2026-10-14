@@ -84,7 +84,7 @@ h1 span {
 .hero-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  max-width: 760px;
+  max-width: 900px;
   margin-top: 42px;
   border-top: 1px solid var(--rule);
   border-bottom: 1px solid var(--rule);

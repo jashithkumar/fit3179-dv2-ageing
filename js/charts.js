@@ -38,3 +38,15 @@ vegaEmbed(
   "js/charts/share_count_rank.vg.json",
   embedOptions
 ).catch(console.error);
+
+vegaEmbed(
+  "#chart-ageing-change-map",
+  "js/charts/ageing_change_map.vg.json",
+  embedOptions
+).catch(console.error);
+
+vegaEmbed(
+  "#chart-lga-ageing-slope",
+  "js/charts/lga_ageing_slope.vg.json",
+  embedOptions
+).catch(console.error);
