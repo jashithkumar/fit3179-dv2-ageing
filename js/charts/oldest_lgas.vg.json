@@ -66,13 +66,14 @@
       "type": "quantitative",
       "title": "Share aged 65+ (%)",
       "scale": {
-        "domain": [0, 45]
+        "domain": [0, 47]
       },
       "axis": {
         "gridColor": "#ded9cf",
         "domain": false,
         "titleColor": "#68757d",
-        "labelColor": "#68757d"
+        "labelColor": "#68757d",
+        "tickCount": 6
       }
     }
   },

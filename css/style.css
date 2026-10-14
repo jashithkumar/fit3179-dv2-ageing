@@ -38,7 +38,7 @@ body {
 ------------------------- */
 
 .hero {
-  padding: 90px 0 75px;
+  padding: 78px 0 62px;
   border-bottom: 1px solid var(--rule);
 }
 
@@ -85,7 +85,7 @@ h1 span {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   max-width: 760px;
-  margin-top: 55px;
+  margin-top: 42px;
   border-top: 1px solid var(--rule);
   border-bottom: 1px solid var(--rule);
 }
@@ -121,7 +121,7 @@ h1 span {
 
 .story-section {
   position: relative;
-  padding: 90px 0;
+  padding: 72px 0;
   border-bottom: 1px solid var(--rule);
 }
 
@@ -145,12 +145,12 @@ h1 span {
 
 .section-heading > p:last-child {
   max-width: 620px;
-  margin-top: 18px;
+  margin-top: 14px;
   color: var(--muted);
 }
 
 .chart-block {
-  margin-top: 52px;
+  margin-top: 38px;
 }
 
 .chart-title {
