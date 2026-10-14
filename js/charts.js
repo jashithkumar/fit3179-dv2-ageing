@@ -10,6 +10,12 @@ vegaEmbed(
 ).catch(console.error);
 
 vegaEmbed(
+  "#chart-population-pyramid",
+  "js/charts/population_pyramid.vg.json",
+  embedOptions
+).catch(console.error);
+
+vegaEmbed(
   "#chart-ageing-map",
   "js/charts/ageing_choropleth.vg.json",
   embedOptions

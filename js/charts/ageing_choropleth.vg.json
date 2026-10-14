@@ -33,7 +33,7 @@
       "field": "properties.pct_65_plus",
       "type": "quantitative",
 
-      "title": "Aged 65+ (%)",
+      "title": "65+ share (%)",
 
       "scale": {
         "domain": [5, 45],

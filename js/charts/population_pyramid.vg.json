@@ -1,0 +1,132 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+
+  "description": "Australia's population age structure in 1971 and 2025.",
+
+  "data": {
+    "url": "data/australia_population_pyramid_1971_2025.csv",
+    "format": {
+      "type": "csv",
+      "parse": {
+        "year": "number",
+        "population": "number",
+        "population_signed": "number"
+      }
+    }
+  },
+
+  "facet": {
+    "column": {
+      "field": "year",
+      "type": "ordinal",
+      "title": null,
+      "header": {
+        "labelFont": "DM Sans",
+        "labelFontSize": 16,
+        "labelFontWeight": 700,
+        "labelColor": "#173b57",
+        "labelPadding": 14
+      }
+    }
+  },
+
+  "spec": {
+    "width": 360,
+    "height": 330,
+
+    "mark": {
+      "type": "bar"
+    },
+
+    "encoding": {
+      "y": {
+        "field": "age_group",
+        "type": "ordinal",
+        "title": null,
+        "sort": [
+          "85+",
+          "75–84",
+          "65–74",
+          "55–64",
+          "45–54",
+          "35–44",
+          "25–34",
+          "15–24",
+          "0–14"
+        ],
+        "axis": {
+          "domain": false,
+          "ticks": false,
+          "labelColor": "#68757d",
+          "labelFontSize": 11
+        }
+      },
+
+      "x": {
+        "field": "population_signed",
+        "type": "quantitative",
+        "title": "Population",
+        "scale": {
+          "domain": [-1800000, 1800000]
+        },
+        "axis": {
+          "gridColor": "#e4dfd5",
+          "gridOpacity": 0.8,
+          "domain": false,
+          "labelColor": "#68757d",
+          "titleColor": "#68757d",
+          "labelExpr": "format(abs(datum.value), '~s')"
+        }
+      },
+
+      "color": {
+        "field": "sex",
+        "type": "nominal",
+        "title": null,
+        "scale": {
+          "domain": ["Male", "Female"],
+          "range": ["#54799b", "#9b6f91"]
+        },
+        "legend": {
+          "orient": "top",
+          "direction": "horizontal",
+          "labelColor": "#68757d",
+          "labelFontSize": 12
+        }
+      },
+
+      "tooltip": [
+        {
+          "field": "year",
+          "type": "quantitative",
+          "title": "Year",
+          "format": "d"
+        },
+        {
+          "field": "age_group",
+          "type": "ordinal",
+          "title": "Age group"
+        },
+        {
+          "field": "sex",
+          "type": "nominal",
+          "title": "Sex"
+        },
+        {
+          "field": "population",
+          "type": "quantitative",
+          "title": "Population",
+          "format": ","
+        }
+      ]
+    }
+  },
+
+  "config": {
+    "background": null,
+    "font": "DM Sans",
+    "view": {
+      "stroke": null
+    }
+  }
+}
