@@ -1,12 +1,22 @@
 :root {
-  --background: #f5f2e9;
-  --text: #1d2933;
-  --navy: #173b57;
-  --teal: #287c78;
-  --teal-light: #8fbfba;
-  --amber: #d49a45;
-  --muted: #68757d;
-  --rule: #d8d3c8;
+  --background: #f6f3ec;
+  --text: #1c2932;
+
+  --navy: #123d56;
+
+  --teal: #1f7973;
+  --teal-light: #a7cec8;
+
+  --amber: #c9822d;
+
+  --purple: #696b9f;
+  --orange: #c76f32;
+
+  --muted: #64727a;
+  --rule: #d9d4ca;
+
+  --neutral-light: #e8e3da;
+  --neutral-mid: #aaa79f;
 
   --page-width: 1100px;
 }
@@ -38,7 +48,7 @@ body {
 ------------------------- */
 
 .hero {
-  padding: 78px 0 62px;
+  padding: 58px 0 30px;
   border-bottom: 1px solid var(--rule);
 }
 
@@ -85,7 +95,7 @@ h1 span {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   max-width: 900px;
-  margin-top: 42px;
+  margin-top: 28px;
   border-top: 1px solid var(--rule);
   border-bottom: 1px solid var(--rule);
 }
@@ -121,8 +131,12 @@ h1 span {
 
 .story-section {
   position: relative;
-  padding: 72px 0;
+  padding: 54px 0;
   border-bottom: 1px solid var(--rule);
+}
+
+.hero + .story-section {
+  padding-top: 30px;
 }
 
 .section-number {
@@ -145,12 +159,12 @@ h1 span {
 
 .section-heading > p:last-child {
   max-width: 620px;
-  margin-top: 14px;
+  margin-top: 10px;
   color: var(--muted);
 }
 
 .chart-block {
-  margin-top: 38px;
+  margin-top: 28px;
 }
 
 .map-block {
