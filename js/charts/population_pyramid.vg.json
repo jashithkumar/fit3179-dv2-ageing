@@ -24,110 +24,161 @@
         "labelFont": "DM Sans",
         "labelFontSize": 16,
         "labelFontWeight": 700,
-        "labelColor": "#173b57",
+        "labelColor": "#123d56",
         "labelPadding": 14
       }
     }
   },
 
+  "spacing": 36,
+
   "spec": {
-    "width": 360,
+    "width": 500,
     "height": 430,
 
-    "mark": {
-      "type": "bar"
-    },
-
-    "encoding": {
-      "y": {
-        "field": "age_group",
-        "type": "ordinal",
-        "title": null,
-        "sort": [
-          "85+",
-          "80–84",
-          "75–79",
-          "70–74",
-          "65–69",
-          "60–64",
-          "55–59",
-          "50–54",
-          "45–49",
-          "40–44",
-          "35–39",
-          "30–34",
-          "25–29",
-          "20–24",
-          "15–19",
-          "10–14",
-          "5–9",
-          "0–4"
-        ],
-        "axis": {
-          "domain": false,
-          "ticks": false,
-          "labelColor": "#68757d",
-          "labelFontSize": 11
+    "layer": [
+      {
+        "mark": {
+          "type": "rule",
+          "color": "#aeb8bc",
+          "strokeWidth": 1.2
+        },
+        "encoding": {
+          "x": {
+            "datum": 0
+          }
         }
       },
 
-      "x": {
-        "field": "population_signed",
-        "type": "quantitative",
-        "title": "Population",
-        "scale": {
-          "domain": [-1800000, 1800000]
+      {
+        "mark": {
+          "type": "bar"
         },
-        "axis": {
-          "gridColor": "#e4dfd5",
-          "gridOpacity": 0.8,
-          "domain": false,
-          "labelColor": "#68757d",
-          "titleColor": "#68757d",
-          "labelExpr": "format(abs(datum.value), '~s')"
-        }
-      },
 
-      "color": {
-        "field": "sex",
-        "type": "nominal",
-        "title": null,
-        "scale": {
-          "domain": ["Male", "Female"],
-          "range": ["#54799b", "#9b6f91"]
-        },
-        "legend": {
-          "orient": "top",
-          "direction": "horizontal",
-          "labelColor": "#68757d",
-          "labelFontSize": 12
-        }
-      },
+        "encoding": {
+          "y": {
+            "field": "age_group",
+            "type": "ordinal",
+            "title": null,
+            "sort": [
+              "85+",
+              "80–84",
+              "75–79",
+              "70–74",
+              "65–69",
+              "60–64",
+              "55–59",
+              "50–54",
+              "45–49",
+              "40–44",
+              "35–39",
+              "30–34",
+              "25–29",
+              "20–24",
+              "15–19",
+              "10–14",
+              "5–9",
+              "0–4"
+            ],
+            "axis": {
+              "domain": false,
+              "ticks": false,
+              "labelColor": "#64727a",
+              "labelFont": "DM Sans",
+              "labelFontSize": 11,
+              "labelPadding": 7
+            }
+          },
 
-      "tooltip": [
-        {
-          "field": "year",
-          "type": "quantitative",
-          "title": "Year",
-          "format": "d"
-        },
-        {
-          "field": "age_group",
-          "type": "ordinal",
-          "title": "Age group"
-        },
-        {
-          "field": "sex",
-          "type": "nominal",
-          "title": "Sex"
-        },
-        {
-          "field": "population",
-          "type": "quantitative",
-          "title": "Population",
-          "format": ","
+          "x": {
+            "field": "population_signed",
+            "type": "quantitative",
+            "title": "Population",
+            "scale": {
+              "domain": [-1500000, 1500000],
+              "nice": false
+            },
+            "axis": {
+              "values": [
+                -1500000,
+                -1000000,
+                -500000,
+                0,
+                500000,
+                1000000,
+                1500000
+              ],
+              "grid": true,
+              "gridColor": "#ddd8ce",
+              "gridOpacity": 0.75,
+              "domain": false,
+              "ticks": false,
+              "labelColor": "#64727a",
+              "labelFont": "DM Sans",
+              "labelFontSize": 10,
+              "labelPadding": 6,
+              "titleColor": "#64727a",
+              "titleFont": "DM Sans",
+              "titleFontSize": 11,
+              "titleFontWeight": 500,
+              "titlePadding": 10,
+              "labelExpr": "datum.value === 0 ? '0' : format(abs(datum.value), '~s')"
+            }
+          },
+
+          "color": {
+            "field": "sex",
+            "type": "nominal",
+            "title": null,
+            "scale": {
+              "domain": ["Male", "Female"],
+              "range": ["#4f7898", "#9b6e91"]
+            },
+            "legend": {
+              "orient": "top",
+              "direction": "horizontal",
+              "columns": 2,
+              "labelColor": "#64727a",
+              "labelFont": "DM Sans",
+              "labelFontSize": 12,
+              "symbolSize": 90,
+              "offset": 8
+            }
+          },
+
+          "tooltip": [
+            {
+              "field": "year",
+              "type": "quantitative",
+              "title": "Year",
+              "format": "d"
+            },
+            {
+              "field": "age_group",
+              "type": "ordinal",
+              "title": "Age group"
+            },
+            {
+              "field": "sex",
+              "type": "nominal",
+              "title": "Sex"
+            },
+            {
+              "field": "population",
+              "type": "quantitative",
+              "title": "Population",
+              "format": ","
+            }
+          ]
         }
-      ]
+      }
+    ]
+  },
+
+  "resolve": {
+    "scale": {
+      "x": "shared",
+      "y": "shared"
     }
   },
 
