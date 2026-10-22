@@ -1,10 +1,10 @@
 
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "description": "Comparison of each state's share of Australia's population aged 85+ and share of residential-care users by service location, 2025.",
+  "description": "Connected dot plot comparing each state's share of Australia's population aged 85+ with its share of residential-care users by service location, 2025. States are ordered by the absolute difference between the two shares.",
 
   "width": "container",
-  "height": 330,
+  "height": 360,
 
   "data": {
     "url": "data/state_care_vs_85plus_2025.csv",
@@ -22,144 +22,249 @@
 
   "transform": [
     {
-      "fold": [
-        "age_85_plus_share_pct",
-        "residential_care_share_pct"
-      ],
-      "as": ["measure", "share_pct"]
-    },
-    {
-      "calculate": "datum.measure === 'age_85_plus_share_pct' ? 'Share of 85+ population' : 'Share of residential-care users'",
-      "as": "measure_label"
-    },
-    {
-      "calculate": "datum.measure === 'age_85_plus_share_pct' ? datum.age_85_plus_population : datum.residential_care_users_service_location",
-      "as": "count"
+      "filter": "datum.state != null"
     },
     {
       "calculate": "datum.state === 'New South Wales' ? 'NSW' : datum.state === 'Victoria' ? 'VIC' : datum.state === 'Queensland' ? 'QLD' : datum.state === 'Western Australia' ? 'WA' : datum.state === 'South Australia' ? 'SA' : datum.state === 'Tasmania' ? 'TAS' : datum.state === 'Northern Territory' ? 'NT' : datum.state === 'Australian Capital Territory' ? 'ACT' : 'Other'",
       "as": "state_short"
+    },
+    {
+      "calculate": "abs(datum.difference_pp)",
+      "as": "abs_difference_pp"
+    },
+    {
+      "calculate": "format(datum.difference_pp, '+.2f') + ' pp'",
+      "as": "difference_label"
+    },
+    {
+      "calculate": "36",
+      "as": "label_x"
     }
   ],
 
-  "mark": {
-    "type": "bar",
-    "cornerRadiusEnd": 2
-  },
-
-  "encoding": {
-    "x": {
-      "field": "state_short",
-      "type": "nominal",
-      "title": null,
-      "sort": [
-        "NSW",
-        "VIC",
-        "QLD",
-        "WA",
-        "SA",
-        "TAS",
-        "NT",
-        "ACT",
-        "Other"
-      ],
-      "axis": {
-        "labelAngle": 0,
-        "labelColor": "#64727a",
-        "labelFontSize": 11,
-        "labelPadding": 8,
-        "ticks": false,
-        "domain": false
-      }
-    },
-
-    "xOffset": {
-      "field": "measure_label",
-      "type": "nominal",
-      "sort": [
-        "Share of 85+ population",
-        "Share of residential-care users"
-      ]
-    },
-
-    "y": {
-      "field": "share_pct",
-      "type": "quantitative",
-      "title": "Share of national total (%)",
-      "scale": {
-        "domain": [0, 40],
-        "nice": false
+  "layer": [
+    {
+      "mark": {
+        "type": "rule",
+        "stroke": "#9f9a90",
+        "strokeWidth": 2.4,
+        "opacity": 0.9
       },
-      "axis": {
-        "values": [0, 10, 20, 30, 40],
-        "labelExpr": "format(datum.value, '.0f') + '%'",
-        "labelColor": "#64727a",
-        "titleColor": "#173b57",
-        "gridColor": "#d9d4ca",
-        "gridOpacity": 0.8,
-        "domain": false,
-        "ticks": false
-      }
-    },
 
-    "color": {
-      "field": "measure_label",
-      "type": "nominal",
-      "title": null,
-      "scale": {
-        "domain": [
-          "Share of 85+ population",
-          "Share of residential-care users"
-        ],
-        "range": [
-          "#1f7973",
-          "#c9822d"
+      "encoding": {
+        "x": {
+          "field": "age_85_plus_share_pct",
+          "type": "quantitative",
+          "title": "Share of national total (%)",
+          "scale": {
+            "domain": [0, 40],
+            "nice": false
+          },
+          "axis": {
+            "values": [0, 10, 20, 30, 40],
+            "labelExpr": "format(datum.value, '.0f') + '%'",
+            "labelColor": "#64727a",
+            "titleColor": "#173b57",
+            "titleFontSize": 11,
+            "gridColor": "#d9d4ca",
+            "gridOpacity": 0.8,
+            "domain": false,
+            "ticks": false
+          }
+        },
+
+        "x2": {
+          "field": "residential_care_share_pct"
+        },
+
+        "y": {
+          "field": "state_short",
+          "type": "nominal",
+          "sort": {
+            "field": "abs_difference_pp",
+            "order": "descending"
+          },
+          "axis": {
+            "title": null,
+            "domain": false,
+            "ticks": false,
+            "labelPadding": 10,
+            "labelColor": "#173b57",
+            "labelFontSize": 12
+          }
+        },
+
+        "tooltip": [
+          {
+            "field": "state",
+            "type": "nominal",
+            "title": "State or territory"
+          },
+          {
+            "field": "difference_pp",
+            "type": "quantitative",
+            "title": "Difference (percentage points)",
+            "format": "+.2f"
+          }
         ]
-      },
-      "legend": {
-        "orient": "top",
-        "direction": "horizontal",
-        "labelColor": "#64727a",
-        "labelFontSize": 11,
-        "symbolType": "square",
-        "symbolSize": 100,
-        "offset": 8
       }
     },
 
-    "tooltip": [
-      {
-        "field": "state",
-        "type": "nominal",
-        "title": "State or territory"
+    {
+      "transform": [
+        {
+          "fold": [
+            "age_85_plus_share_pct",
+            "residential_care_share_pct"
+          ],
+          "as": [
+            "measure",
+            "share_pct"
+          ]
+        },
+        {
+          "calculate": "datum.measure === 'age_85_plus_share_pct' ? 'Share of 85+ population' : 'Share of residential-care users'",
+          "as": "measure_label"
+        },
+        {
+          "calculate": "datum.measure === 'age_85_plus_share_pct' ? datum.age_85_plus_population : datum.residential_care_users_service_location",
+          "as": "count"
+        }
+      ],
+
+      "mark": {
+        "type": "point",
+        "filled": true,
+        "size": 95,
+        "stroke": "#f5f2e9",
+        "strokeWidth": 1.5
       },
-      {
-        "field": "measure_label",
-        "type": "nominal",
-        "title": "Measure"
-      },
-      {
-        "field": "share_pct",
-        "type": "quantitative",
-        "title": "Share of national total",
-        "format": ".2f",
-        "formatType": "number"
-      },
-      {
-        "field": "count",
-        "type": "quantitative",
-        "title": "People",
-        "format": ",.0f"
+
+      "encoding": {
+        "x": {
+          "field": "share_pct",
+          "type": "quantitative",
+          "scale": {
+            "domain": [0, 40],
+            "nice": false
+          }
+        },
+
+        "y": {
+          "field": "state_short",
+          "type": "nominal",
+          "sort": {
+            "field": "abs_difference_pp",
+            "order": "descending"
+          }
+        },
+
+        "color": {
+          "field": "measure_label",
+          "type": "nominal",
+          "title": null,
+          "scale": {
+            "domain": [
+              "Share of 85+ population",
+              "Share of residential-care users"
+            ],
+            "range": [
+              "#287c78",
+              "#d49a45"
+            ]
+          },
+          "legend": {
+            "orient": "top",
+            "direction": "horizontal",
+            "labelColor": "#64727a",
+            "labelFontSize": 11,
+            "symbolSize": 100,
+            "offset": 8
+          }
+        },
+
+        "tooltip": [
+          {
+            "field": "state",
+            "type": "nominal",
+            "title": "State or territory"
+          },
+          {
+            "field": "measure_label",
+            "type": "nominal",
+            "title": "Measure"
+          },
+          {
+            "field": "share_pct",
+            "type": "quantitative",
+            "title": "Share of national total",
+            "format": ".2f"
+          },
+          {
+            "field": "count",
+            "type": "quantitative",
+            "title": "People",
+            "format": ",.0f"
+          },
+          {
+            "field": "difference_pp",
+            "type": "quantitative",
+            "title": "Difference (percentage points)",
+            "format": "+.2f"
+          }
+        ]
       }
-    ]
-  },
+    },
+
+    {
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "baseline": "middle",
+        "dx": 3,
+        "font": "DM Sans",
+        "fontSize": 11,
+        "fontWeight": 600,
+        "color": "#64727a"
+      },
+
+      "encoding": {
+        "x": {
+          "field": "label_x",
+          "type": "quantitative",
+          "scale": {
+            "domain": [0, 40],
+            "nice": false
+          },
+          "axis": null
+        },
+
+        "y": {
+          "field": "state_short",
+          "type": "nominal",
+          "sort": {
+            "field": "abs_difference_pp",
+            "order": "descending"
+          }
+        },
+
+        "text": {
+          "field": "difference_label",
+          "type": "nominal"
+        }
+      }
+    }
+  ],
 
   "config": {
     "background": null,
     "font": "DM Sans",
+
     "view": {
-      "stroke": null
+      "stroke": null,
+      "fill": null
     },
+
     "axis": {
       "labelFont": "DM Sans",
       "titleFont": "DM Sans",
