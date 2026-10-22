@@ -63,3 +63,11 @@ vegaEmbed(
   "js/charts/state_tile_map.vg.json",
   embedOptions
 ).catch(console.error);
+
+vegaEmbed(
+  "#chart-national-projections",
+  "js/charts/national_ageing_projection.vg.json",
+  embedOptions
+).catch(error =>
+  console.error("Chart 11 failed to render:", error)
+);

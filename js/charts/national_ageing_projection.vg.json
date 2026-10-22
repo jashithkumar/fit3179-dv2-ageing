@@ -1,0 +1,147 @@
+
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Observed and projected shares of Australians aged 65 and 85 and over, 1971–2071.",
+
+  "width": "container",
+  "height": 370,
+
+  "data": {
+    "url": "data/australia_ageing_observed_projected_1971_2071.csv",
+    "format": {
+      "type": "csv",
+      "parse": {
+        "year": "number",
+        "pct_65_plus": "number",
+        "pct_85_plus": "number"
+      }
+    }
+  },
+
+  "transform": [
+    {
+      "fold": ["pct_65_plus", "pct_85_plus"],
+      "as": ["age_metric", "share"]
+    },
+    {
+      "calculate": "datum.age_metric === 'pct_65_plus' ? 'Aged 65+' : 'Aged 85+'",
+      "as": "age_group"
+    }
+  ],
+
+  "layer": [
+    {
+      "transform": [
+        {
+          "filter": "datum.period === 'Observed'"
+        }
+      ],
+      "mark": {
+        "type": "line",
+        "strokeWidth": 3
+      }
+    },
+    {
+      "transform": [
+        {
+          "filter": "datum.period === 'Projected'"
+        }
+      ],
+      "mark": {
+        "type": "line",
+        "strokeWidth": 3,
+        "strokeDash": [7, 4]
+      }
+    }
+  ],
+
+  "encoding": {
+    "x": {
+      "field": "year",
+      "type": "quantitative",
+      "title": "Year",
+      "scale": {
+        "domain": [1971, 2071],
+        "nice": false
+      },
+      "axis": {
+        "values": [1980, 2000, 2020, 2040, 2060, 2070],
+        "format": "d",
+        "grid": false,
+        "domain": false,
+        "labelColor": "#64727a",
+        "titleColor": "#64727a"
+      }
+    },
+
+    "y": {
+      "field": "share",
+      "type": "quantitative",
+      "title": "Share of population (%)",
+      "scale": {
+        "domain": [0, 30],
+        "nice": false
+      },
+      "axis": {
+        "values": [0, 5, 10, 15, 20, 25, 30],
+        "labelExpr": "datum.value + '%'",
+        "gridColor": "#d9d4ca",
+        "gridOpacity": 0.8,
+        "domain": false,
+        "labelColor": "#64727a",
+        "titleColor": "#64727a"
+      }
+    },
+
+    "color": {
+      "field": "age_group",
+      "type": "nominal",
+      "title": null,
+      "scale": {
+        "domain": ["Aged 65+", "Aged 85+"],
+        "range": ["#174f4d", "#c9822d"]
+      },
+      "legend": {
+        "orient": "top",
+        "direction": "horizontal",
+        "labelFont": "DM Sans",
+        "labelFontSize": 12,
+        "labelColor": "#64727a",
+        "symbolStrokeWidth": 3
+      }
+    },
+
+    "tooltip": [
+      {
+        "field": "year",
+        "type": "quantitative",
+        "title": "Year",
+        "format": "d"
+      },
+      {
+        "field": "age_group",
+        "type": "nominal",
+        "title": "Age group"
+      },
+      {
+        "field": "share",
+        "type": "quantitative",
+        "title": "Population share",
+        "format": ".2f"
+      },
+      {
+        "field": "period",
+        "type": "nominal",
+        "title": "Data status"
+      }
+    ]
+  },
+
+  "config": {
+    "background": null,
+    "font": "DM Sans",
+    "view": {
+      "stroke": null
+    }
+  }
+}
