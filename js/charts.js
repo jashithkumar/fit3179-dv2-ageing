@@ -50,3 +50,10 @@ vegaEmbed(
   "js/charts/lga_ageing_slope.vg.json",
   embedOptions
 ).catch(console.error);
+
+
+vegaEmbed(
+  "#chart-state-tile-map",
+  "js/charts/state_tile_map.vg.json",
+  embedOptions
+).catch(console.error);

@@ -1,0 +1,297 @@
+
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Comparison of the share and number of older residents across Australian states and territories in 2025. Tile positions are schematic.",
+
+  "width": "container",
+  "height": 400,
+
+  "data": {
+    "url": "data/lga_ageing_2025.csv",
+    "format": {
+      "type": "csv",
+      "parse": {
+        "total_population": "number",
+        "age_65_plus": "number"
+      }
+    }
+  },
+
+  "transform": [
+    {
+      "filter": "datum.state != null && datum.total_population > 0 && datum.age_65_plus != null"
+    },
+    {
+      "aggregate": [
+        {
+          "op": "sum",
+          "field": "total_population",
+          "as": "state_population"
+        },
+        {
+          "op": "sum",
+          "field": "age_65_plus",
+          "as": "older_population"
+        }
+      ],
+      "groupby": ["state"]
+    },
+    {
+      "calculate": "datum.older_population / datum.state_population * 100",
+      "as": "pct_65_plus"
+    },
+    {
+      "calculate": "datum.state === 'New South Wales' ? 'NSW' : datum.state === 'Victoria' ? 'VIC' : datum.state === 'Queensland' ? 'QLD' : datum.state === 'South Australia' ? 'SA' : datum.state === 'Western Australia' ? 'WA' : datum.state === 'Tasmania' ? 'TAS' : datum.state === 'Northern Territory' ? 'NT' : (datum.state === 'Australian Capital Territory' || datum.state === 'ACT') ? 'ACT' : datum.state === 'Other Territories' ? 'Other Territories' : datum.state",
+      "as": "state_short"
+    },
+    {
+      "calculate": "datum.state === 'Western Australia' ? 0 : datum.state === 'Northern Territory' ? 1 : datum.state === 'South Australia' ? 1 : datum.state === 'Queensland' ? 2 : datum.state === 'New South Wales' ? 2 : datum.state === 'Victoria' ? 2 : datum.state === 'Tasmania' ? 3 : (datum.state === 'Australian Capital Territory' || datum.state === 'ACT') ? 3 : 4",
+      "as": "grid_x"
+    },
+    {
+      "calculate": "datum.state === 'Northern Territory' ? 0 : datum.state === 'Queensland' ? 0 : datum.state === 'Other Territories' ? 0 : datum.state === 'Western Australia' ? 1 : datum.state === 'South Australia' ? 1 : datum.state === 'New South Wales' ? 1 : (datum.state === 'Australian Capital Territory' || datum.state === 'ACT') ? 2 : datum.state === 'Victoria' ? 2 : datum.state === 'Tasmania' ? 3 : 0",
+      "as": "grid_y"
+    },
+    {
+      "calculate": "datum.pct_65_plus >= 28 ? '#ffffff' : '#123d56'",
+      "as": "label_color"
+    },
+    {
+      "calculate": "format(datum.pct_65_plus, '.1f') + '% aged 65+'",
+      "as": "share_label"
+    },
+    {
+      "calculate": "format(datum.older_population, ',.0f') + ' older residents'",
+      "as": "count_label"
+    },
+    {
+      "calculate": "datum.grid_x - 0.44",
+      "as": "x0"
+    },
+    {
+      "calculate": "datum.grid_x + 0.44",
+      "as": "x1"
+    },
+    {
+      "calculate": "datum.grid_y - 0.34",
+      "as": "y0"
+    },
+    {
+      "calculate": "datum.grid_y + 0.34",
+      "as": "y1"
+    }
+  ],
+
+  "layer": [
+    {
+      "mark": {
+        "type": "rect",
+        "stroke": "#f6f3ec",
+        "strokeWidth": 3
+      },
+      "encoding": {
+        "x": {
+          "field": "x0",
+          "type": "quantitative",
+          "scale": {
+            "domain": [-0.6, 4.6],
+            "nice": false
+          },
+          "axis": null
+        },
+        "x2": {
+          "field": "x1"
+        },
+        "y": {
+          "field": "y0",
+          "type": "quantitative",
+          "scale": {
+            "domain": [-0.5, 3.5],
+            "reverse": true,
+            "nice": false
+          },
+          "axis": null
+        },
+        "y2": {
+          "field": "y1"
+        },
+        "color": {
+          "field": "pct_65_plus",
+          "type": "quantitative",
+          "title": "Residents aged 65+ (%)",
+          "scale": {
+            "domain": [5, 45],
+            "clamp": true,
+            "range": [
+              "#c7dedb",
+              "#a9ceca",
+              "#82b9b4",
+              "#58a19b",
+              "#337f7a",
+              "#174f4d"
+            ]
+          },
+          "legend": {
+            "orient": "right",
+            "gradientLength": 180,
+            "gradientThickness": 12,
+            "titleColor": "#123d56",
+            "labelColor": "#64727a",
+            "titleFont": "DM Sans",
+            "labelFont": "DM Sans",
+            "format": ".0f"
+          }
+        },
+        "tooltip": [
+          {
+            "field": "state",
+            "type": "nominal",
+            "title": "State or territory"
+          },
+          {
+            "field": "pct_65_plus",
+            "type": "quantitative",
+            "title": "Residents aged 65+ (%)",
+            "format": ".1f"
+          },
+          {
+            "field": "older_population",
+            "type": "quantitative",
+            "title": "Residents aged 65+",
+            "format": ","
+          },
+          {
+            "field": "state_population",
+            "type": "quantitative",
+            "title": "Total population",
+            "format": ","
+          }
+        ]
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "font": "DM Sans",
+        "fontSize": 13,
+        "fontWeight": 700,
+        "dy": -18
+      },
+      "encoding": {
+        "x": {
+          "field": "grid_x",
+          "type": "quantitative",
+          "scale": {
+            "domain": [-0.6, 4.6],
+            "nice": false
+          },
+          "axis": null
+        },
+        "y": {
+          "field": "grid_y",
+          "type": "quantitative",
+          "scale": {
+            "domain": [-0.5, 3.5],
+            "reverse": true,
+            "nice": false
+          },
+          "axis": null
+        },
+        "text": {
+          "field": "state_short",
+          "type": "nominal"
+        },
+        "color": {
+          "field": "label_color",
+          "type": "nominal",
+          "scale": null
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "font": "DM Sans",
+        "fontSize": 14,
+        "fontWeight": 700,
+        "dy": 1
+      },
+      "encoding": {
+        "x": {
+          "field": "grid_x",
+          "type": "quantitative",
+          "scale": {
+            "domain": [-0.6, 4.6],
+            "nice": false
+          },
+          "axis": null
+        },
+        "y": {
+          "field": "grid_y",
+          "type": "quantitative",
+          "scale": {
+            "domain": [-0.5, 3.5],
+            "reverse": true,
+            "nice": false
+          },
+          "axis": null
+        },
+        "text": {
+          "field": "share_label",
+          "type": "nominal"
+        },
+        "color": {
+          "field": "label_color",
+          "type": "nominal",
+          "scale": null
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "font": "DM Sans",
+        "fontSize": 10,
+        "dy": 19
+      },
+      "encoding": {
+        "x": {
+          "field": "grid_x",
+          "type": "quantitative",
+          "scale": {
+            "domain": [-0.6, 4.6],
+            "nice": false
+          },
+          "axis": null
+        },
+        "y": {
+          "field": "grid_y",
+          "type": "quantitative",
+          "scale": {
+            "domain": [-0.5, 3.5],
+            "reverse": true,
+            "nice": false
+          },
+          "axis": null
+        },
+        "text": {
+          "field": "count_label",
+          "type": "nominal"
+        },
+        "color": {
+          "field": "label_color",
+          "type": "nominal",
+          "scale": null
+        }
+      }
+    }
+  ],
+
+  "config": {
+    "background": null,
+    "font": "DM Sans",
+    "view": {
+      "stroke": null
+    }
+  }
+}
