@@ -1,10 +1,6 @@
-
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "description": "Ten Australian LGAs with the largest number of residents aged 65+ in 2025, among LGAs with at least 5,000 residents.",
-  "width": "container",
-  "height": 330,
-
+  "background": "transparent",
   "data": {
     "url": "data/lga_ageing_2025.csv",
     "format": {
@@ -12,20 +8,32 @@
       "parse": {
         "total_population": "number",
         "age_65_plus": "number",
-        "pct_65_plus": "number"
+        "age_75_plus": "number",
+        "age_85_plus": "number"
       }
     }
   },
-
   "transform": [
     {
-      "filter": "datum.total_population >= 5000 && isValid(datum.age_65_plus)"
+      "filter": "datum.total_population >= 5000 && datum.age_65_plus > 0"
+    },
+    {
+      "calculate": "datum.age_65_plus - datum.age_75_plus",
+      "as": "age_65_74"
+    },
+    {
+      "calculate": "datum.age_75_plus - datum.age_85_plus",
+      "as": "age_75_84"
+    },
+    {
+      "calculate": "datum.age_85_plus",
+      "as": "age_85"
     },
     {
       "window": [
         {
           "op": "rank",
-          "as": "count_rank"
+          "as": "rank"
         }
       ],
       "sort": [
@@ -36,63 +44,108 @@
       ]
     },
     {
-      "filter": "datum.count_rank <= 10"
+      "filter": "datum.rank <= 10"
     },
     {
-      "calculate": "format(datum.age_65_plus, ',.0f')",
-      "as": "count_label"
+      "calculate": "datum.lga_name + ' (' + format(datum.age_65_plus, ',') + ')'",
+      "as": "lga_label"
+    },
+    {
+      "fold": [
+        "age_65_74",
+        "age_75_84",
+        "age_85"
+      ],
+      "as": [
+        "age_band",
+        "age_count"
+      ]
+    },
+    {
+      "calculate": "datum.age_count / datum.age_65_plus * 100",
+      "as": "share"
+    },
+    {
+      "calculate": "datum.age_band === 'age_65_74' ? '65–74' : datum.age_band === 'age_75_84' ? '75–84' : '85+'",
+      "as": "age_band_label"
+    },
+    {
+      "calculate": "format(datum.share, '.1f') + '%'",
+      "as": "share_label"
     }
   ],
-
+  "width": {
+    "step": 280
+  },
+  "height": {
+    "step": 34
+  },
+  "encoding": {
+    "x": {
+      "field": "age_band_label",
+      "type": "ordinal",
+      "sort": [
+        "65–74",
+        "75–84",
+        "85+"
+      ],
+      "axis": {
+        "orient": "top",
+        "title": null,
+        "labelAngle": 0,
+        "labelFontSize": 12,
+        "labelFontWeight": "bold",
+        "labelPadding": 10,
+        "ticks": false,
+        "domain": false
+      }
+    },
+    "y": {
+      "field": "lga_label",
+      "type": "ordinal",
+      "sort": {
+        "field": "age_65_plus",
+        "order": "descending"
+      },
+      "axis": {
+        "title": null,
+        "labelFontSize": 11,
+        "labelPadding": 8,
+        "labelLimit": 230,
+        "ticks": false,
+        "domain": false
+      }
+    }
+  },
   "layer": [
     {
       "mark": {
-        "type": "bar",
-        "color": "#287c78",
-        "height": {
-          "band": 0.72
-        },
-        "cornerRadiusEnd": 3
+        "type": "rect",
+        "cornerRadius": 4,
+        "stroke": "#ffffff",
+        "strokeWidth": 2
       },
       "encoding": {
-        "x": {
-          "field": "age_65_plus",
+        "color": {
+          "field": "share",
           "type": "quantitative",
-          "title": "Residents aged 65+",
           "scale": {
-            "domain": [0, 210000],
-            "nice": false
+            "domain": [0, 60],
+            "scheme": "tealblues"
           },
-          "axis": {
-            "values": [0, 50000, 100000, 150000, 200000],
-            "format": "~s",
-            "gridColor": "#e4dfd5",
-            "domain": false,
-            "labelColor": "#68757d",
-            "titleColor": "#68757d"
-          }
-        },
-        "y": {
-          "field": "lga_name",
-          "type": "nominal",
-          "title": null,
-          "sort": {
-            "field": "age_65_plus",
-            "order": "descending"
-          },
-          "axis": {
-            "domain": false,
-            "ticks": false,
-            "labelColor": "#173b57",
-            "labelFontSize": 12,
-            "labelLimit": 190
+          "legend": {
+            "title": "Share of 65+ residents (%)",
+            "orient": "bottom",
+            "direction": "horizontal",
+            "gradientLength": 300,
+            "format": ".0f"
           }
         },
         "tooltip": [
           {
             "field": "lga_name",
             "type": "nominal",
-            "title": "Local government area"
+            "title": "LGA"
           },
           {
             "field": "state",
@@ -103,12 +156,23 @@
             "field": "age_65_plus",
             "type": "quantitative",
             "title": "Residents aged 65+",
-            "format": ",.0f"
+            "format": ","
           },
           {
-            "field": "pct_65_plus",
+            "field": "age_band_label",
+            "type": "nominal",
+            "title": "Age group"
+          },
+          {
+            "field": "age_count",
             "type": "quantitative",
-            "title": "Population aged 65+ (%)",
+            "title": "Residents in age group",
+            "format": ","
+          },
+          {
+            "field": "share",
+            "type": "quantitative",
+            "title": "Share of 65+ population (%)",
             "format": ".1f"
           }
         ]
@@ -117,45 +181,37 @@
     {
       "mark": {
         "type": "text",
-        "align": "left",
-        "baseline": "middle",
-        "dx": 6,
-        "font": "DM Sans",
-        "fontSize": 11,
-        "fontWeight": 600,
-        "color": "#173b57",
-        "clip": false
+        "fontSize": 12,
+        "fontWeight": "bold"
       },
       "encoding": {
-        "x": {
-          "field": "age_65_plus",
-          "type": "quantitative",
-          "scale": {
-            "domain": [0, 210000],
-            "nice": false
-          }
-        },
-        "y": {
-          "field": "lga_name",
-          "type": "nominal",
-          "sort": {
-            "field": "age_65_plus",
-            "order": "descending"
-          }
-        },
         "text": {
-          "field": "count_label",
+          "field": "share_label",
           "type": "nominal"
+        },
+        "color": {
+          "condition": {
+            "test": "datum.share >= 40",
+            "value": "#ffffff"
+          },
+          "value": "#173d3a"
         }
       }
     }
   ],
-
   "config": {
-    "background": null,
-    "font": "DM Sans",
-    "view": {
-      "stroke": null
-    }
+  "background": "transparent",
+  "view": {
+    "stroke": null,
+    "fill": null
+  },
+  "axis": {
+    "labelFont": "DM Sans",
+    "titleFont": "DM Sans"
+  },
+  "legend": {
+    "labelFont": "DM Sans",
+    "titleFont": "DM Sans"
   }
+}
 }
