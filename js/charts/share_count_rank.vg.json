@@ -1,10 +1,10 @@
+
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-
-  "description": "Comparison of Australian LGA ranks by share and number of residents aged 65 and over.",
+  "description": "Comparison of the share of residents aged 65 and over with the absolute number of older residents across Australian LGAs in 2025.",
 
   "width": "container",
-  "height": 420,
+  "height": 440,
 
   "data": {
     "url": "data/lga_ageing_2025.csv",
@@ -13,213 +13,158 @@
       "parse": {
         "total_population": "number",
         "pct_65_plus": "number",
-        "age_65_plus": "number"
+        "age_65_plus": "number",
+        "median_age": "number"
       }
     }
   },
 
   "transform": [
     {
-      "filter": "datum.total_population >= 5000"
-    },
-
-    {
-      "window": [
-        {
-          "op": "rank",
-          "as": "share_rank"
-        }
-      ],
-      "sort": [
-        {
-          "field": "pct_65_plus",
-          "order": "descending"
-        }
-      ]
-    },
-
-    {
-      "window": [
-        {
-          "op": "rank",
-          "as": "count_rank"
-        }
-      ],
-      "sort": [
-        {
-          "field": "age_65_plus",
-          "order": "descending"
-        }
-      ]
-    },
-
-    {
-      "calculate": "abs(datum.share_rank - datum.count_rank)",
-      "as": "rank_gap"
-    },
-
-    {
-      "filter": "datum.share_rank <= 5 || datum.count_rank <= 5"
+      "filter": "datum.total_population >= 5000 && datum.age_65_plus > 0"
     }
   ],
 
-  "encoding": {
-    "y": {
-      "field": "lga_name",
-      "type": "nominal",
-      "title": null,
-
-      "sort": {
-        "field": "rank_gap",
-        "order": "descending"
-      },
-
-      "axis": {
-        "domain": false,
-        "ticks": false,
-        "labelPadding": 10,
-        "labelColor": "#1d2933",
-        "labelFontSize": 12
-      }
-    }
-  },
-
   "layer": [
-
     {
       "mark": {
-        "type": "rule",
-        "stroke": "#b9b5ac",
-        "strokeWidth": 2
+        "type": "circle",
+        "filled": true,
+        "size": 55,
+        "opacity": 0.55,
+        "stroke": "#f6f3ec",
+        "strokeWidth": 0.6
       },
 
       "encoding": {
         "x": {
-          "field": "share_rank",
+          "field": "pct_65_plus",
           "type": "quantitative",
-          "title": "Rank among LGAs (1 = highest)",
-
+          "title": "Residents aged 65+ (%)",
           "scale": {
-            "domain": [1, 360],
-            "zero": false
+            "domain": [5, 45],
+            "clamp": true
           },
-
           "axis": {
-            "gridColor": "#e4dfd5",
-            "gridOpacity": 0.8,
-            "domain": false,
-            "labelColor": "#68757d",
-            "titleColor": "#68757d",
-            "values": [1, 50, 100, 150, 200, 250, 300, 350],
-            "labelFlush": false
+            "values": [10, 20, 30, 40],
+            "labelExpr": "format(datum.value, '.0f') + '%'"
           }
         },
 
-        "x2": {
-          "field": "count_rank"
-        }
-      }
-    },
-
-    {
-      "transform": [
-        {
-          "fold": [
-            "share_rank",
-            "count_rank"
-          ],
-          "as": [
-            "rank_type",
-            "rank"
-          ]
-        },
-
-        {
-          "calculate": "datum.rank_type === 'share_rank' ? 'Rank by 65+ share' : 'Rank by number aged 65+'",
-          "as": "rank_label"
-        }
-      ],
-
-      "mark": {
-        "type": "point",
-        "filled": true,
-        "size": 125,
-        "stroke": "#f5f2e9",
-        "strokeWidth": 1.5
-      },
-
-      "encoding": {
-        "x": {
-          "field": "rank",
-          "type": "quantitative"
+        "y": {
+          "field": "age_65_plus",
+          "type": "quantitative",
+          "title": "Number of residents aged 65+ (log scale)",
+          "scale": {
+            "type": "log",
+            "domain": [100, 200000],
+            "clamp": true,
+            "nice": false
+          },
+          "axis": {
+            "values": [100, 1000, 10000, 100000],
+            "format": "~s",
+            "grid": true
+          }
         },
 
         "color": {
-          "field": "rank_label",
-          "type": "nominal",
-          "title": null,
-
-          "scale": {
-            "domain": [
-              "Rank by 65+ share",
-              "Rank by number aged 65+"
-            ],
-
-            "range": [
-              "#287c78",
-              "#d49a45"
-            ]
-          },
-
-          "legend": {
-            "orient": "top",
-            "direction": "horizontal",
-            "labelColor": "#68757d",
-            "labelFontSize": 12,
-            "symbolSize": 100
-          }
+          "condition": [
+            {
+              "test": "datum.lga_name === 'Victor Harbor'",
+              "value": "#c9822d"
+            },
+            {
+              "test": "datum.lga_name === 'Brisbane'",
+              "value": "#123d56"
+            }
+          ],
+          "value": "#1f7973"
         },
 
         "tooltip": [
           {
             "field": "lga_name",
             "type": "nominal",
-            "title": "LGA"
+            "title": "Local government area"
           },
-
           {
             "field": "state",
             "type": "nominal",
             "title": "State"
           },
-
-          {
-            "field": "rank_label",
-            "type": "nominal",
-            "title": "Ranking"
-          },
-
-          {
-            "field": "rank",
-            "type": "quantitative",
-            "title": "Rank",
-            "format": ".0f"
-          },
-
           {
             "field": "pct_65_plus",
             "type": "quantitative",
-            "title": "65+ share",
+            "title": "Residents aged 65+ (%)",
             "format": ".1f"
           },
-
           {
             "field": "age_65_plus",
             "type": "quantitative",
-            "title": "People aged 65+",
+            "title": "Residents aged 65+",
             "format": ","
+          },
+          {
+            "field": "total_population",
+            "type": "quantitative",
+            "title": "Total population",
+            "format": ","
+          },
+          {
+            "field": "median_age",
+            "type": "quantitative",
+            "title": "Median age",
+            "format": ".1f"
           }
         ]
+      }
+    },
+
+    {
+      "transform": [
+        {
+          "filter": "datum.lga_name === 'Victor Harbor' || datum.lga_name === 'Brisbane'"
+        }
+      ],
+
+      "mark": {
+        "type": "text",
+        "font": "DM Sans",
+        "fontSize": 12,
+        "fontWeight": 700,
+        "align": "left",
+        "baseline": "middle",
+        "dx": 8,
+        "dy": -8,
+        "color": "#123d56"
+      },
+
+      "encoding": {
+        "x": {
+          "field": "pct_65_plus",
+          "type": "quantitative",
+          "scale": {
+            "domain": [5, 45],
+            "clamp": true
+          }
+        },
+
+        "y": {
+          "field": "age_65_plus",
+          "type": "quantitative",
+          "scale": {
+            "type": "log",
+            "domain": [100, 200000],
+            "clamp": true,
+            "nice": false
+          }
+        },
+
+        "text": {
+          "field": "lga_name",
+          "type": "nominal"
+        }
       }
     }
   ],
@@ -227,6 +172,21 @@
   "config": {
     "background": null,
     "font": "DM Sans",
+
+    "axis": {
+      "labelColor": "#64727a",
+      "titleColor": "#123d56",
+      "labelFont": "DM Sans",
+      "titleFont": "DM Sans",
+      "labelFontSize": 11,
+      "titleFontSize": 12,
+      "titleFontWeight": 600,
+      "gridColor": "#d9d4ca",
+      "gridOpacity": 0.7,
+      "domain": false,
+      "ticks": false,
+      "labelPadding": 6
+    },
 
     "view": {
       "stroke": null
