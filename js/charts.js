@@ -71,3 +71,9 @@ vegaEmbed(
 ).catch(error =>
   console.error("Chart 11 failed to render:", error)
 );
+
+vegaEmbed(
+  "#chart-care-vs-85plus",
+  "js/charts/care_vs_85plus.vg.json",
+  embedOptions
+).catch(error => console.error("Chart 12 failed to render:", error));
