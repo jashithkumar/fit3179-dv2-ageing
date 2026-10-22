@@ -6,15 +6,35 @@
   "width": "container",
   "height": 540,
 
+  "params": [
+    {
+      "name": "state_filter",
+      "value": "All Australia",
+      "bind": {
+        "input": "select",
+        "name": "Explore state: ",
+        "options": [
+          "All Australia",
+          "New South Wales",
+          "Victoria",
+          "Queensland",
+          "South Australia",
+          "Western Australia",
+          "Tasmania",
+          "Northern Territory",
+          "Other Territories"
+        ]
+      }
+    }
+  ],
+
   "projection": {
     "type": "conicEqualArea",
     "parallels": [-18, -36],
-    "rotate": [-134, 0, 0],
-    "center": [0, -28]
+    "rotate": [-134, 0, 0]
   },
 
   "layer": [
-
     {
       "data": {
         "url": "data/geo/lga_ageing_2025.topojson",
@@ -24,10 +44,32 @@
         }
       },
 
+      "transform": [
+        {
+          "lookup": "properties.LGA_CODE25",
+          "from": {
+            "data": {
+              "url": "data/lga_65plus_points_2025.csv",
+              "format": {
+                "type": "csv",
+                "parse": {
+                  "LGA_CODE25": "number"
+                }
+              }
+            },
+            "key": "LGA_CODE25",
+            "fields": ["state"]
+          }
+        },
+        {
+          "filter": "state_filter === 'All Australia' || datum.state === state_filter"
+        }
+      ],
+
       "mark": {
         "type": "geoshape",
-        "fill": "#ebe7dd",
-        "stroke": "#f5f2e9",
+        "fill": "#e8e3da",
+        "stroke": "#f6f3ec",
         "strokeWidth": 0.5
       }
     },
@@ -48,16 +90,21 @@
         }
       },
 
+      "transform": [
+        {
+          "filter": "state_filter === 'All Australia' || datum.state === state_filter"
+        }
+      ],
+
       "mark": {
         "type": "circle",
-        "color": "#d49a45",
-        "opacity": 0.52,
-        "stroke": "#8b642c",
+        "color": "#c9822d",
+        "opacity": 0.58,
+        "stroke": "#8a5721",
         "strokeWidth": 0.7
       },
 
       "encoding": {
-
         "longitude": {
           "field": "lon",
           "type": "quantitative"
@@ -75,13 +122,15 @@
 
           "scale": {
             "domain": [0, 190000],
-            "range": [8, 1500]
+            "range": [8, 1450]
           },
 
           "legend": {
             "orient": "right",
-            "titleColor": "#173b57",
-            "labelColor": "#68757d",
+            "titleColor": "#123d56",
+            "labelColor": "#64727a",
+            "titleFont": "DM Sans",
+            "labelFont": "DM Sans",
             "titleFontSize": 12,
             "labelFontSize": 11,
             "format": "~s",
