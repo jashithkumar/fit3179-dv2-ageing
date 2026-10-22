@@ -1,0 +1,161 @@
+
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Ten Australian LGAs with the largest number of residents aged 65+ in 2025, among LGAs with at least 5,000 residents.",
+  "width": "container",
+  "height": 330,
+
+  "data": {
+    "url": "data/lga_ageing_2025.csv",
+    "format": {
+      "type": "csv",
+      "parse": {
+        "total_population": "number",
+        "age_65_plus": "number",
+        "pct_65_plus": "number"
+      }
+    }
+  },
+
+  "transform": [
+    {
+      "filter": "datum.total_population >= 5000 && isValid(datum.age_65_plus)"
+    },
+    {
+      "window": [
+        {
+          "op": "rank",
+          "as": "count_rank"
+        }
+      ],
+      "sort": [
+        {
+          "field": "age_65_plus",
+          "order": "descending"
+        }
+      ]
+    },
+    {
+      "filter": "datum.count_rank <= 10"
+    },
+    {
+      "calculate": "format(datum.age_65_plus, ',.0f')",
+      "as": "count_label"
+    }
+  ],
+
+  "layer": [
+    {
+      "mark": {
+        "type": "bar",
+        "color": "#287c78",
+        "height": {
+          "band": 0.72
+        },
+        "cornerRadiusEnd": 3
+      },
+      "encoding": {
+        "x": {
+          "field": "age_65_plus",
+          "type": "quantitative",
+          "title": "Residents aged 65+",
+          "scale": {
+            "domain": [0, 210000],
+            "nice": false
+          },
+          "axis": {
+            "values": [0, 50000, 100000, 150000, 200000],
+            "format": "~s",
+            "gridColor": "#e4dfd5",
+            "domain": false,
+            "labelColor": "#68757d",
+            "titleColor": "#68757d"
+          }
+        },
+        "y": {
+          "field": "lga_name",
+          "type": "nominal",
+          "title": null,
+          "sort": {
+            "field": "age_65_plus",
+            "order": "descending"
+          },
+          "axis": {
+            "domain": false,
+            "ticks": false,
+            "labelColor": "#173b57",
+            "labelFontSize": 12,
+            "labelLimit": 190
+          }
+        },
+        "tooltip": [
+          {
+            "field": "lga_name",
+            "type": "nominal",
+            "title": "Local government area"
+          },
+          {
+            "field": "state",
+            "type": "nominal",
+            "title": "State"
+          },
+          {
+            "field": "age_65_plus",
+            "type": "quantitative",
+            "title": "Residents aged 65+",
+            "format": ",.0f"
+          },
+          {
+            "field": "pct_65_plus",
+            "type": "quantitative",
+            "title": "Population aged 65+ (%)",
+            "format": ".1f"
+          }
+        ]
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "baseline": "middle",
+        "dx": 6,
+        "font": "DM Sans",
+        "fontSize": 11,
+        "fontWeight": 600,
+        "color": "#173b57",
+        "clip": false
+      },
+      "encoding": {
+        "x": {
+          "field": "age_65_plus",
+          "type": "quantitative",
+          "scale": {
+            "domain": [0, 210000],
+            "nice": false
+          }
+        },
+        "y": {
+          "field": "lga_name",
+          "type": "nominal",
+          "sort": {
+            "field": "age_65_plus",
+            "order": "descending"
+          }
+        },
+        "text": {
+          "field": "count_label",
+          "type": "nominal"
+        }
+      }
+    }
+  ],
+
+  "config": {
+    "background": null,
+    "font": "DM Sans",
+    "view": {
+      "stroke": null
+    }
+  }
+}

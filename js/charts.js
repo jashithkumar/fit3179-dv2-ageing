@@ -34,6 +34,12 @@ vegaEmbed(
 ).catch(console.error);
 
 vegaEmbed(
+  "#chart-lga-older-population-top10",
+  "js/charts/lga_older_population_top10.vg.json",
+  embedOptions
+).catch(console.error);
+
+vegaEmbed(
   "#chart-rank-comparison",
   "js/charts/share_count_rank.vg.json",
   embedOptions
