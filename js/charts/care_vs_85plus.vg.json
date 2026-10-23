@@ -22,10 +22,10 @@
 
   "transform": [
     {
-      "filter": "datum.state != null"
+      "filter": "datum.state != null && datum.state !== 'Other Territories'"
     },
     {
-      "calculate": "datum.state === 'New South Wales' ? 'NSW' : datum.state === 'Victoria' ? 'VIC' : datum.state === 'Queensland' ? 'QLD' : datum.state === 'Western Australia' ? 'WA' : datum.state === 'South Australia' ? 'SA' : datum.state === 'Tasmania' ? 'TAS' : datum.state === 'Northern Territory' ? 'NT' : datum.state === 'Australian Capital Territory' ? 'ACT' : 'Other'",
+      "calculate": "datum.state === 'New South Wales' ? 'NSW' : datum.state === 'Victoria' ? 'VIC' : datum.state === 'Queensland' ? 'QLD' : datum.state === 'Western Australia' ? 'WA' : datum.state === 'South Australia' ? 'SA' : datum.state === 'Tasmania' ? 'TAS' : datum.state === 'Northern Territory' ? 'NT' : datum.state === 'Australian Capital Territory' ? 'ACT' : datum.state",
       "as": "state_short"
     },
     {
@@ -144,9 +144,21 @@
         "x": {
           "field": "share_pct",
           "type": "quantitative",
+          "title": "Share of national total (%)",
           "scale": {
             "domain": [0, 40],
             "nice": false
+          },
+          "axis": {
+            "values": [0, 10, 20, 30, 40],
+            "labelExpr": "format(datum.value, '.0f') + '%'",
+            "labelColor": "#64727a",
+            "titleColor": "#173b57",
+            "titleFontSize": 11,
+            "gridColor": "#d9d4ca",
+            "gridOpacity": 0.8,
+            "domain": false,
+            "ticks": false
           }
         },
 
@@ -232,11 +244,22 @@
         "x": {
           "field": "label_x",
           "type": "quantitative",
+          "title": "Share of national total (%)",
           "scale": {
             "domain": [0, 40],
             "nice": false
           },
-          "axis": null
+          "axis": {
+            "values": [0, 10, 20, 30, 40],
+            "labelExpr": "format(datum.value, '.0f') + '%'",
+            "labelColor": "#64727a",
+            "titleColor": "#173b57",
+            "titleFontSize": 11,
+            "gridColor": "#d9d4ca",
+            "gridOpacity": 0.8,
+            "domain": false,
+            "ticks": false
+          }
         },
 
         "y": {
