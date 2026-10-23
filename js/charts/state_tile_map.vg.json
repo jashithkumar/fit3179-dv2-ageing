@@ -118,7 +118,7 @@
         "color": {
           "field": "pct_65_plus",
           "type": "quantitative",
-          "title": "Residents aged 65+ (%)",
+          "title": "Share aged 65+ (%)",
           "scale": {
             "domain": [5, 45],
             "clamp": true,
