@@ -231,6 +231,34 @@ h1 span {
   color: var(--muted);
 }
 
+/* -------------------------
+   CONCLUSION
+------------------------- */
+
+.conclusion-section {
+  padding-bottom: 64px;
+}
+
+.conclusion-copy {
+  max-width: 760px;
+  margin-top: 28px;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.conclusion-copy p {
+  margin: 0 0 16px;
+}
+
+.conclusion-takeaway {
+  margin-top: 30px !important;
+  color: var(--navy);
+  font-family: "Newsreader", serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
 
 /* -------------------------
    FOOTER
